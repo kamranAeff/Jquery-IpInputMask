@@ -67,10 +67,14 @@
 
   $.fn.ipAddress = function() {
     let rgx = /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\b/;
+    this.each(function(index, item) {
+      if ($(item).attr("placeholder") == undefined)
+        $(item).attr("placeholder", "000.000.000.000");
+    });
 
     $(this).on("blur", function(e) {
       let that = this;
-      if (that.value.length>0 && !that.value.isIpv4()) {
+      if (that.value.length > 0 && !that.value.isIpv4()) {
         $(this).addClass("is-invalid");
         e.preventDefault();
         return false;
@@ -84,7 +88,8 @@
           return current.length > 0 && !rgx.test(current);
         }).length == 0
       ) {
-        if (that.value.length>0 && !that.value.isIpv4()) $(this).addClass("is-invalid");
+        if (that.value.length > 0 && !that.value.isIpv4())
+          $(this).addClass("is-invalid");
 
         $(this).removeClass("is-invalid");
         return true;
