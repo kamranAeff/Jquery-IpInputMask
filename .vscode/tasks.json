@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Union Typescript Files",
+            "type": "shell",
+            "windows": {
+                "command": "I:/Plugins/VsCodeTools.exe",
+                "args": [
+                    "tsmin",
+                    "${workspaceRoot}/ts"
+                ]
+            },
+            "group": "build"
+        },
+        {
+            "label": "Javascript Files Concator",
+            "type": "shell",
+            "windows": {
+                "command": "I:/Plugins/VsCodeTools.exe",
+                "args": [
+                    "jsmin",
+                    "${workspaceRoot}/js"
+                ]
+            },
+            "group": "build"
+        }
+    ]
+}

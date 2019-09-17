@@ -1,0 +1,6 @@
+{  
+    "outputFile": "intelect.min.js",  
+    "inputFiles": [
+    "mask.ip-input.js",
+    "app.js"
+]}
