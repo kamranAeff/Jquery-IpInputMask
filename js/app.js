@@ -1,3 +1,3 @@
 $(document).ready(function(){
-    $('[ip-mask]').ipAddress()
+    $('[ip-mask]').ipAddress();
 });
