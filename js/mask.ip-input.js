@@ -9,11 +9,11 @@
   };
 
   String.prototype.insert = function(str, pos) {
-    if(typeof(pos) == "undefined") pos = 0;
-    if(typeof(str) == "undefined") str = '';
+    if (typeof pos == "undefined") pos = 0;
+    if (typeof str == "undefined") str = "";
 
     return this.slice(0, pos) + str + this.slice(pos);
-};
+  };
 
   String.prototype.getSymbolCount = function(char = ".") {
     if (this.indexOf(char) == -1) return 0;
@@ -33,57 +33,65 @@
     return count;
   };
 
-  $.fn.getCursorPosition = function () {
+  $.fn.getCursorPosition = function() {
     var input = this.get(0);
     if (!input) return;
-    if ('selectionStart' in input) {
-        return input.selectionStart;
+    if ("selectionStart" in input) {
+      return input.selectionStart;
     } else if (document.selection) {
-        // IE
-        input.focus();
-        var selection = document.selection.createRange();
-        var selectionLength = document.selection.createRange().text.length;
-        sel.moveStart('character', -input.value.length);
-        return selection.text.length - selectionLength;
+      // IE
+      input.focus();
+      var selection = document.selection.createRange();
+      var selectionLength = document.selection.createRange().text.length;
+      sel.moveStart("character", -input.value.length);
+      return selection.text.length - selectionLength;
     }
-};
+  };
 
-$.fn.setCursorPosition = function(position) {
-    if(this != null) {
-        if($(this)[0].createTextRange) {
-            var range = $(this)[0].createTextRange();
-            range.move('character', position);
-            range.select();
+  $.fn.setCursorPosition = function(position) {
+    if (this != null) {
+      if ($(this)[0].createTextRange) {
+        var range = $(this)[0].createTextRange();
+        range.move("character", position);
+        range.select();
+      } else {
+        if ($(this)[0].selectionStart) {
+          $(this)[0].focus();
+          $(this)[0].setSelectionRange(position, position);
+        } else {
+          $(this)[0].focus();
         }
-        else {
-            if($(this)[0].selectionStart) {
-                $(this)[0].focus();
-                $(this)[0].setSelectionRange(position, position);
-            }
-            else
-           {
-            $(this)[0].focus();
-           }
-        }
+      }
     }
-};
+  };
 
   $.fn.ipAddress = function() {
     let rgx = /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\b/;
+
+    $(this).on("blur", function(e) {
+      let that = this;
+      if (that.value.length>0 && !that.value.isIpv4()) {
+        $(this).addClass("is-invalid");
+        e.preventDefault();
+        return false;
+      }
+    });
+
     $(this).on("keyup", function(e) {
-        let that = this;
-        if (
-            that.value.split(".").filter(function(current, index, arr) {
-              return current.length > 0 && !rgx.test(current);
-            }).length == 0
-          ) {
-            $(this).removeClass("is-invalid");
-            return true;
-          }
-          else{
-            $(this).addClass("is-invalid");
-            return true;
-          }
+      let that = this;
+      if (
+        that.value.split(".").filter(function(current, index, arr) {
+          return current.length > 0 && !rgx.test(current);
+        }).length == 0
+      ) {
+        if (that.value.length>0 && !that.value.isIpv4()) $(this).addClass("is-invalid");
+
+        $(this).removeClass("is-invalid");
+        return true;
+      } else {
+        $(this).addClass("is-invalid");
+        return true;
+      }
     });
 
     $(this).on("keydown", function(e) {
@@ -98,7 +106,7 @@ $.fn.setCursorPosition = function(position) {
         case 38: /*up arrow*/
         case 39: /*right arrow*/
         case 40 /*down arrow*/:
-          pointIndex = that.value.lastIndexOf(".",position);
+          pointIndex = that.value.lastIndexOf(".", position);
           pointIndex = pointIndex < 0 ? 0 : pointIndex + 1;
           if (
             that.value.split(".").filter(function(current, index, arr) {
@@ -107,8 +115,7 @@ $.fn.setCursorPosition = function(position) {
           ) {
             $(this).removeClass("is-invalid");
             return true;
-          }
-          else{
+          } else {
             $(this).addClass("is-invalid");
             return true;
           }
@@ -116,11 +123,11 @@ $.fn.setCursorPosition = function(position) {
         default:
           if (e.ctrlKey) {
             switch (e.which) {
-              case 65:/*a*/ //ctrl+a
-              case 67:/*c*/ //ctrl+c
-              case 86:/*v*/ //ctrl+v
+              case 65: /*a*/ //ctrl+a
+              case 67: /*c*/ //ctrl+c
+              case 86 /*v*/: //ctrl+v
                 return true;
-              case 88:/*x*/ //ctrl+x
+              case 88 /*x*/: //ctrl+x
                 $(this).removeClass("is-invalid");
                 return true;
 
@@ -133,16 +140,16 @@ $.fn.setCursorPosition = function(position) {
 
       that = $.extend(that, { newValue: that.value });
 
-      if(that.value.length!=position){
-          e.preventDefault();
-          that.newValue=that.value.insert(e.key,position);
-          if(!that.newValue.isIpv4()) return false;
-          that.value=that.newValue;
-          $(that).setCursorPosition(position+1);
-          return true;
+      if (that.value.length != position) {
+        e.preventDefault();
+        that.newValue = that.value.insert(e.key, position);
+        if (!that.newValue.isIpv4()) return false;
+        that.value = that.newValue;
+        $(that).setCursorPosition(position + 1);
+        return true;
       }
-      
-      pointIndex = that.value.lastIndexOf(".",position);
+
+      pointIndex = that.value.lastIndexOf(".", position);
       pointIndex = pointIndex < 0 ? 0 : pointIndex + 1;
 
       if (
